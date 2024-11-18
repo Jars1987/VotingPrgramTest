@@ -9,7 +9,7 @@ pub use constants::*;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("AYR8P7KgHZNvV1RT2DBNuJDUVzF9i8dGVYJ65LviggvH");
+declare_id!("5TkN5PsZXQaznE4FqkpgtDzj8D5PQvJHctnNc4hShTDV");
 
 #[program]
 pub mod voting_dapp {
@@ -17,13 +17,21 @@ pub mod voting_dapp {
 
     pub fn initialize_poll(context: Context<InitializePoll>, 
         poll_id: u64, 
+        name: String,
         description: String,
         poll_start: u64,
         poll_end: u64,
     ) -> Result<()> {
-        instructions::initialize_poll::initialize_poll(context, poll_id, description, poll_start, poll_end)?;
+        initialize_poll::initialize_poll(context, poll_id, name, description, poll_start, poll_end)?;
         Ok(())
       }
+
+      pub fn initialize_candidate(context: Context<InitializeCandidate>, 
+        candidate_name: String,
+        poll_id: u64,) -> Result<()> {
+            initialize_candidate::initialize_candidate(context, candidate_name, poll_id)?;
+            Ok(())
+        }
     
 }
 

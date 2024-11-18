@@ -5,6 +5,8 @@ use anchor_lang::prelude::*;
 pub struct Poll {
   pub poll_id: u64,
   pub poll_owner: Pubkey,
+  #[max_len(64)]
+  pub poll_name: String,
   #[max_len(280)]
   pub poll_description: String,
   pub poll_start: u64,

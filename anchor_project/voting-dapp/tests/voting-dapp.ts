@@ -4,7 +4,7 @@ import { VotingDapp } from '../target/types/voting_dapp';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { assert } from 'chai';
 
-const programId = new PublicKey('AYR8P7KgHZNvV1RT2DBNuJDUVzF9i8dGVYJ65LviggvH');
+const programId = new PublicKey('5TkN5PsZXQaznE4FqkpgtDzj8D5PQvJHctnNc4hShTDV');
 
 describe('Voting', () => {
   // Configure the client to use the local cluster.
@@ -15,15 +15,24 @@ describe('Voting', () => {
   const program = anchor.workspace.VotingDapp as Program<VotingDapp>;
 
   //Happy test Initialize Poll
-  it('Initialize Poll', async () => {
-    await program.methods
-      .initializePoll(
-        new anchor.BN(1),
-        'Will Solana reach $500 before the new year?',
-        new anchor.BN(0),
-        new anchor.BN(1735689599)
-      )
-      .rpc();
+  it('Initialize a Poll', async () => {
+    try {
+      await program.methods
+        .initializePoll(
+          new anchor.BN(1),
+          'Solana Prediction',
+          'Will Solana reach $500 before the new year?',
+          new anchor.BN(1731946140),
+          new anchor.BN(1735689599)
+        )
+        .rpc();
+    } catch (e) {
+      // Log the full error for debugging
+      console.log(`Error details: ${e.message}. Now the full log here:`, e);
+      assert.fail(
+        'Poll did not initialize successfully. Check the error message for more details'
+      );
+    }
 
     //Get the address of the poll
     const [pollAdress] = PublicKey.findProgramAddressSync(
@@ -36,7 +45,7 @@ describe('Voting', () => {
     console.log(poll);
 
     //Test if the poll id is 1
-    assert.strictEqual(poll.pollId.toString(), new anchor.BN(1).toString());
+    assert.equal(poll.pollId.toNumber(), 1);
   });
 
   //Unhappy test Initialize Poll
@@ -44,7 +53,8 @@ describe('Voting', () => {
     try {
       await program.methods
         .initializePoll(
-          new anchor.BN(1),
+          new anchor.BN(2),
+          'Solana Prediction',
           'Will Solana reach $500 before the new year?',
           new anchor.BN(1735689599),
           new anchor.BN(1731687319)
@@ -57,16 +67,94 @@ describe('Voting', () => {
       );
     } catch (e) {
       // Log the full error for debugging
-      console.log('Error details:', e);
+      console.log(`Error details: ${e.message}. Now the full log here:`, e);
 
       // Assert the error message contains the expected string
       assert.include(
         e.message,
-        'Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0.',
+        'Poll start must be before poll end',
         'Error message does not match expected value'
       );
       console.log(
         'Test passed: Unable to initialize poll due to invalid parameters'
+      );
+    }
+  });
+
+  it('Initialize and add Candidates to the pool', async () => {
+    //call the initialize candidate instruction to add candidates to the poll
+
+    try {
+      await program.methods
+        .initializeCandidate('Yes, easy!', new anchor.BN(1))
+        .rpc();
+    } catch (e) {
+      // Log the full error for debugging
+      console.log(`Error details: ${e.message}. Now the full log here:`, e);
+      assert.fail(
+        'Poll did not initialize successfully. Check the error message for more details'
+      );
+    }
+
+    try {
+      await program.methods
+        .initializeCandidate('No, never!', new anchor.BN(1))
+        .rpc();
+    } catch (e) {
+      // Log the full error for debugging
+      console.log(`Error details: ${e.message}. Now the full log here:`, e);
+      assert.fail(
+        'Poll did not initialize successfully. Check the error message for more details'
+      );
+    }
+
+    //Get the address of the poll
+    const [yesAddress] = PublicKey.findProgramAddressSync(
+      [
+        new anchor.BN(1).toArrayLike(Buffer, 'le', 8),
+        Buffer.from('Yes, easy!'),
+      ],
+      programId
+    );
+
+    const [noAddress] = PublicKey.findProgramAddressSync(
+      [
+        new anchor.BN(1).toArrayLike(Buffer, 'le', 8),
+        Buffer.from('No, never!'),
+      ],
+      programId
+    );
+
+    //Fetch the candidates
+    const yesCandidate = await program.account.candidate.fetch(yesAddress);
+    const noCandidate = await program.account.candidate.fetch(noAddress);
+
+    //lets confirm the candidates added to the pool have been initialized and have 0 votes
+    assert.equal(yesCandidate.candidateVotes.toNumber(), 0);
+    assert.equal(noCandidate.candidateVotes.toNumber(), 0);
+  });
+
+  it('Attempt to initiate a candidate with an invalid name', async () => {
+    try {
+      await program.methods
+        .initializeCandidate('No, never!', new anchor.BN(1))
+        .rpc();
+
+      // If no error is thrown, fail the test
+      assert.fail(
+        'Candidate initialization should fail as the Candidate name already exists'
+      );
+    } catch (e) {
+      // Log the full error for debugging
+      console.log(`Error details: ${e.message}. Now the full log here:`, e);
+      // Assert the error message contains the expected string
+      assert.include(
+        e.message,
+        'Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0. ',
+        'Error message does not match expected value'
+      );
+      console.log(
+        'Test passed: Unable to initialize candidate as the Candidate name already exists and has already been initialized'
       );
     }
   });

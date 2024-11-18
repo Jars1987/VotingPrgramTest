@@ -8,4 +8,8 @@ pub enum ErrorCode {
     PollEndInThePast,
     #[msg("Description must be less than 280 characters")]
     DescriptionTooLong,
+    #[msg("Candidate name must be less than 32 characters")]
+    CandidateNameTooLong,
+    #[msg("Exceeded the maximum number of candidates")]
+    TooManyCandidates
 }

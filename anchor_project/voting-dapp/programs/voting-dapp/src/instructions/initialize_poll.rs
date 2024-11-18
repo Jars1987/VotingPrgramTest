@@ -23,19 +23,21 @@ pub struct InitializePoll<'info> {
 pub fn initialize_poll(
   context: Context<InitializePoll>, 
   poll_id: u64, 
+  name: String,
   description: String,
   poll_start: u64,
   poll_end: u64,
 ) -> Result<()> {
   let clock = Clock::get()?;
   
-  require!(poll_start < poll_end, ErrorCode::InvalidPollTime);
+  require!(poll_start < poll_end, ErrorCode::InvalidPollTime); //this is comming as undefined, we need check why.
   require!(poll_end > clock.slot, ErrorCode::PollEndInThePast);
   require!(description.len() < 280, ErrorCode::DescriptionTooLong);
 
   let poll = &mut context.accounts.poll;
   poll.poll_id = poll_id;
   poll.poll_owner = *context.accounts.signer.key;
+  poll.poll_name = name;
   poll.poll_description = description;
   poll.poll_start = poll_start;
   poll.poll_end = poll_end;

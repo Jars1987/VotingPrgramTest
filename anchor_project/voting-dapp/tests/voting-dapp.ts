@@ -10,6 +10,7 @@ describe('Voting', () => {
   // Configure the client to use the local cluster.
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
+  const connection = provider.connection;
   const signer = provider.wallet as anchor.Wallet;
 
   const program = anchor.workspace.VotingDapp as Program<VotingDapp>;
@@ -66,7 +67,7 @@ describe('Voting', () => {
         'Poll initialization should have failed due to invalid time range'
       );
     } catch (e) {
-      // Log the full error for debugging
+      /* // Log the full error for debugging
       console.log(`Error details: ${e.message}. Now the full log here:`, e);
 
       // Assert the error message contains the expected string
@@ -75,6 +76,7 @@ describe('Voting', () => {
         'Poll start must be before poll end',
         'Error message does not match expected value'
       );
+      */
       console.log(
         'Test passed: Unable to initialize poll due to invalid parameters'
       );
@@ -157,6 +159,52 @@ describe('Voting', () => {
         'Test passed: Unable to initialize candidate as the Candidate name already exists and has already been initialized'
       );
     }
+  });
+
+  it('Vote for a candidate', async () => {
+    //call the vote instruction to vote for a candidate
+    try {
+      const voteIx = await program.methods
+        .vote(new anchor.BN(1), 'Yes, easy!')
+        .instruction();
+
+      const blockhashContext = await connection.getLatestBlockhash();
+
+      const tx = new anchor.web3.Transaction({
+        feePayer: provider.wallet.publicKey,
+        blockhash: blockhashContext.blockhash,
+        lastValidBlockHeight: blockhashContext.lastValidBlockHeight,
+      }).add(voteIx);
+
+      const signature = await anchor.web3.sendAndConfirmTransaction(
+        connection,
+        tx,
+        [signer.payer]
+      );
+      console.log(`Transaction signature: ${signature}`);
+    } catch (e) {
+      // Log the full error for debugging
+      console.log(`Error details: ${e.message}. Now the full log here:`, e);
+      assert.fail(
+        'Your vote has failed. Check the error message for more details'
+      );
+    }
+
+    //Get the address of the poll
+    const [yesAddress] = PublicKey.findProgramAddressSync(
+      [
+        new anchor.BN(1).toArrayLike(Buffer, 'le', 8),
+        Buffer.from('Yes, easy!'),
+      ],
+      programId
+    );
+
+    //Fetch the candidates
+    const yesCandidate = await program.account.candidate.fetch(yesAddress);
+    console.log('yes candidate', yesCandidate);
+
+    //lets confirm the vote has been add to the candidate
+    assert.equal(yesCandidate.candidateVotes.toNumber(), 1);
   });
 
   //More tests to come

@@ -8,8 +8,14 @@ pub enum ErrorCode {
     PollEndInThePast,
     #[msg("Description must be less than 280 characters")]
     DescriptionTooLong,
-    #[msg("Candidate name must be less than 32 characters")]
-    CandidateNameTooLong,
+    #[msg("Unable to initialize a new candidat. Poll has already ended")]
+    PollEnded,
+    #[msg("You are not authorized to perform this action")]
+    Unauthorized,
     #[msg("Exceeded the maximum number of candidates")]
-    TooManyCandidates
+    TooManyCandidates,
+    #[msg("Poll has not started yet")]
+    PollNotStarted,
+    #[msg("You have already voted")]
+    AlreadyVoted
 }

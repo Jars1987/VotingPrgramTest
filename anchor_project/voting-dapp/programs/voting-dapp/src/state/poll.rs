@@ -13,4 +13,7 @@ pub struct Poll {
   pub poll_end: u64,
   pub candidate_amount: u64,
   pub candidate_winner: Pubkey, //candidate with the most votes
+  /*#[max_len(20)]
+  pub voters: Vec<Pubkey>,
+  */
 }

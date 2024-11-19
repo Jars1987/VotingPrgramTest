@@ -44,6 +44,7 @@ pub fn initialize_candidate(
 
   candidate.candidate_name = candidate_name;
   candidate.candidate_votes = 0;
+  candidate.poll = poll.key();
 
   poll.candidate_amount += 1;
 

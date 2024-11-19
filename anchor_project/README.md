@@ -1,15 +1,13 @@
 # TODO
 
-----> TESTS FILE DUE TO TIME REQUIREMENT BIG NUMBERS FAILING CHECKING AGAINST
-SLOTS. TRY to use if statements instead.
+----> Time stamps and poll times are other way around
 
 ----> Create a key pair and test if signer different than the poll owner can
 initialize a candidate
 
-----> To make sure a voter doesnt vote more than once, add a voters: Vec<Pubkey>
-to the Poll account you are going to need a max_len (maximum of pubkeys) this
-maximum of pubkeys will be the maxiun of voters too You will need to thinkg on
-an alternative
+----> To make sure a voter doesnt vote more than once,create a Vote PDA account
+with seeds of poll.key, candidate.key and signer key. This way when you try to
+vote again you can't because it can't initialize the account again.
 
 ----> Token gate the voters
 
@@ -17,6 +15,7 @@ an alternative
 
 //**\*\***\*\***\*\***\*\*\*\***\*\***\*\***\*\***
 **\*\*\*\***\*\*\*\***\*\*\*\***\*\*\***\*\*\*\***\*\*\*\***\*\*\*\***//
+instalation: run cargo build run anchor build run npm i
 
 To test the Program Localy initiale a local validator by running the command:
 

@@ -4,7 +4,7 @@ import { VotingDapp } from '../target/types/voting_dapp';
 import { Keypair, PublicKey } from '@solana/web3.js';
 import { assert } from 'chai';
 
-const programId = new PublicKey('5TkN5PsZXQaznE4FqkpgtDzj8D5PQvJHctnNc4hShTDV');
+const programId = new PublicKey('HH6z4hgoYg2ZsSkceAUxPZUJdWt8hLqUm1SoEmWqYhPh');
 
 describe('Voting', () => {
   // Configure the client to use the local cluster.
@@ -147,8 +147,6 @@ describe('Voting', () => {
         'Candidate initialization should fail as the Candidate name already exists'
       );
     } catch (e) {
-      // Log the full error for debugging
-      console.log(`Error details: ${e.message}. Now the full log here:`, e);
       // Assert the error message contains the expected string
       assert.include(
         e.message,
@@ -164,6 +162,7 @@ describe('Voting', () => {
   it('Vote for a candidate', async () => {
     //call the vote instruction to vote for a candidate
     try {
+      //different way to send a transaction
       const voteIx = await program.methods
         .vote(new anchor.BN(1), 'Yes, easy!')
         .instruction();

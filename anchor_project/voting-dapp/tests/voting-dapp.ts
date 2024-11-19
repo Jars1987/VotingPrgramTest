@@ -203,5 +203,39 @@ describe('Voting', () => {
     assert.equal(yesCandidate.candidateVotes.toNumber(), 1);
   });
 
-  //More tests to come
+  it('Attempt to vote to non exixting candidate', async () => {
+    try {
+      const voteIx = await program.methods
+        .vote(new anchor.BN(1), 'Its over 8000!')
+        .instruction();
+
+      const blockhashContext = await connection.getLatestBlockhash();
+
+      const tx = new anchor.web3.Transaction({
+        feePayer: provider.wallet.publicKey,
+        blockhash: blockhashContext.blockhash,
+        lastValidBlockHeight: blockhashContext.lastValidBlockHeight,
+      }).add(voteIx);
+
+      const signature = await anchor.web3.sendAndConfirmTransaction(
+        connection,
+        tx,
+        [signer.payer]
+      );
+      // If no error is thrown, fail the test
+      assert.fail('Voting should fail as the Candidate does not exists');
+    } catch (e) {
+      // Assert the error message contains the expected string
+      assert.include(
+        e.message,
+        'Transaction simulation failed: Error processing Instruction 0: custom program error: 0xbc4',
+        'Error message does not match expected value'
+      );
+      console.log(
+        'Test passed: Unable to initialize candidate as the Candidate name already exists and has already been initialized'
+      );
+    }
+  });
+
+  //Next tests here
 });

@@ -28,11 +28,11 @@ pub fn initialize_poll(
   poll_start: u64,
   poll_end: u64,
 ) -> Result<()> {
-  let clock = Clock::get()?;
+  let current_time = Clock::get()?.unix_timestamp;
 
 
   require!(poll_start < poll_end, ErrorCode::InvalidPollTime); //this is comming as undefined, we need check why.
-  require!(poll_end as i64 > clock.unix_timestamp, ErrorCode::PollEndInThePast);
+  require!(poll_end as i64 > current_time, ErrorCode::PollEndInThePast);
   require!(description.len() < 280, ErrorCode::DescriptionTooLong);
 
   let poll = &mut context.accounts.poll;

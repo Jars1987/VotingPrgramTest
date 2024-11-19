@@ -67,18 +67,15 @@ describe('Voting', () => {
         'Poll initialization should have failed due to invalid time range'
       );
     } catch (e) {
-      /* // Log the full error for debugging
-      console.log(`Error details: ${e.message}. Now the full log here:`, e);
-
       // Assert the error message contains the expected string
       assert.include(
         e.message,
         'Poll start must be before poll end',
         'Error message does not match expected value'
       );
-      */
+
       console.log(
-        'Test passed: Unable to initialize poll due to invalid parameters'
+        'Test passed: Unable to initialize poll due to invalid time parameters'
       );
     }
   });

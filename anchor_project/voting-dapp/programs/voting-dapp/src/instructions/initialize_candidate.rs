@@ -34,19 +34,11 @@ pub fn initialize_candidate(
 ) -> Result<()> {
   let candidate = &mut context.accounts.candidate;
   let poll = &mut context.accounts.poll;
-  let clock = Clock::get()?;
-
-  /* 
-  msg!("poll_start: {}", poll.poll_start as i64);
-  msg!("clock.unix_timestamp: {}", clock.unix_timestamp);
-  msg!("Poll start < clock.unix_timestamp: {}", poll.poll_start as i64 > clock.unix_timestamp);
-  msg!("poll_end: {}", poll.poll_end as i64);
-  msg!("Poll end < clock.unix_timestamp: {}", poll.poll_end as i64 <= clock.unix_timestamp);
+  let current_time = Clock::get()?.unix_timestamp;
   
-  require!(poll.poll_end as i64 <= clock.unix_timestamp, ErrorCode::PollEnded);
-  require!(poll.poll_start as i64 > clock.unix_timestamp, ErrorCode::PollNotStarted);
-  */
   require!(poll.poll_owner == *context.accounts.signer.key, ErrorCode::Unauthorized);
+  require!(poll.poll_end as i64 > current_time, ErrorCode::PollEnded);
+  require!(poll.poll_start as i64 <= current_time, ErrorCode::PollNotStarted);
   require!(poll.candidate_amount + 1 <= 10, ErrorCode::TooManyCandidates);
   
 

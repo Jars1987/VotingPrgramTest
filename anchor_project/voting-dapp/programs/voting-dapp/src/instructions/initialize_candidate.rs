@@ -38,13 +38,12 @@ pub fn initialize_candidate(
   
   require!(poll.poll_owner == *context.accounts.signer.key, ErrorCode::Unauthorized);
   require!(poll.poll_end as i64 > current_time, ErrorCode::PollEnded);
-  require!(poll.poll_start as i64 <= current_time, ErrorCode::PollNotStarted);
   require!(poll.candidate_amount + 1 <= 10, ErrorCode::TooManyCandidates);
   
 
   candidate.candidate_name = candidate_name;
   candidate.candidate_votes = 0;
-  candidate.poll = poll.key();
+  candidate.poll = poll.poll_id;
 
   poll.candidate_amount += 1;
 

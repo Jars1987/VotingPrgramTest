@@ -93,22 +93,16 @@ export function useVotingProgram() {
 export function useVotingProgramAccount({ account }: { account: PublicKey }) {
   const { cluster } = useCluster();
   const transactionToast = useTransactionToast();
-  const { program, pollAccounts } = useVotingProgram();
+  const { program } = useVotingProgram();
 
   const pollAccountQuery = useQuery({
     queryKey: ['poll', 'fetch', { cluster, account }],
     queryFn: () => program.account.poll.fetch(account),
   });
 
-  // TRY TO GET CANDIDATES BY POLL ACCOUNT
   const candidateAccounts = useQuery({
     queryKey: ['candidate', 'all', { cluster }],
-    queryFn: async () => {
-      const allCandidates = await program.account.candidate.all();
-      return allCandidates.filter(
-        (candidate: any) => candidate.account.poll === account
-      );
-    },
+    queryFn: () => program.account.candidate.all(),
   });
 
   const initializeCandidate = useMutation<string, Error, InitCandidateArgs>({

@@ -10,6 +10,7 @@ import {
   ExplorerLink,
 } from '../cluster/cluster-ui';
 import { WalletButton } from '../solana/solana-provider';
+import Link from 'next/link';
 
 export function UiLayout({
   children,
@@ -24,7 +25,9 @@ export function UiLayout({
     <div className='h-full flex flex-col'>
       <div className='navbar bg-indigo-400 text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0'>
         <div className='flex-1'>
-          <p className='text-pretty text-xl text-stone-950'>SolKratus</p>
+          <Link href={'/'}>
+            <p className='text-pretty text-xl text-stone-950'>SolKratus</p>
+          </Link>
         </div>
         <div className='flex-none space-x-2'>
           <WalletButton />
@@ -126,7 +129,7 @@ export function AppHero({
             title
           )}
           {typeof subtitle === 'string' ? (
-            <p className='py-6'>{subtitle}</p>
+            <p className='py-2'>{subtitle}</p>
           ) : (
             subtitle
           )}

@@ -10,11 +10,11 @@ export default function DashboardFeature() {
   const { publicKey } = useWallet();
 
   return (
-    <div className='max-w-full'>
+    <div className='w-full border-2 border-red-500'>
       <div>
         <AppHero title='SolKratus' subtitle='Your sol, your vote your rule!' />
 
-        <div className='max-w-xl mx-auto py-2 sm:px-6 lg:px-2 text-center'>
+        <div className=' py-2 sm:px-6 lg:px-2 text-center'>
           <div className='space-y-2'>
             <p className='italic'>
               Start now by creating your own pool or vote on an existing poll.
@@ -37,7 +37,9 @@ export default function DashboardFeature() {
           </div>
         </div>
       </div>
-      <VotingList />
+      <div className='w-full'>
+        <VotingList />
+      </div>
     </div>
   );
 }

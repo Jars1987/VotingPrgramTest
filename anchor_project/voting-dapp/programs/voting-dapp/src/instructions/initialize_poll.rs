@@ -28,10 +28,9 @@ pub fn initialize_poll(
   poll_start: u64,
   poll_end: u64,
 ) -> Result<()> {
-  let current_time = Clock::get()?.unix_timestamp;
+  let current_time = Clock::get()?.unix_timestamp * 1000;
 
-
-  require!(poll_start < poll_end, ErrorCode::InvalidPollTime); //this is comming as undefined, we need check why.
+  require!(poll_start < poll_end, ErrorCode::InvalidPollTime);
   require!(poll_end as i64 > current_time, ErrorCode::PollEndInThePast);
   require!(description.len() < 280, ErrorCode::DescriptionTooLong);
 

@@ -35,7 +35,7 @@ export function UiLayout({
         </div>
       </div>
 
-      <div className='flex-grow mx-4 lg:mx-auto'>
+      <div className='flex-grow w-full max-w-screen-lg px-4 mx-auto'>
         <Suspense
           fallback={
             <div className='text-center my-32'>

@@ -34,7 +34,7 @@ pub fn initialize_candidate(
 ) -> Result<()> {
   let candidate = &mut context.accounts.candidate;
   let poll = &mut context.accounts.poll;
-  let current_time = Clock::get()?.unix_timestamp;
+  let current_time = Clock::get()?.unix_timestamp * 1000;
   
   require!(poll.poll_owner == *context.accounts.signer.key, ErrorCode::Unauthorized);
   require!(poll.poll_end as i64 > current_time, ErrorCode::PollEnded);

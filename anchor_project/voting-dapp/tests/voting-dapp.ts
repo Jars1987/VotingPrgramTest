@@ -23,33 +23,27 @@ describe('Voting', () => {
           new anchor.BN(1),
           'Solana Prediction',
           'Will Solana reach $500 before the new year?',
-          new anchor.BN(1731946140),
-          new anchor.BN(1735689599)
+          new anchor.BN(1731946140000),
+          new anchor.BN(1735689599000)
         )
         .rpc();
     } catch (e) {
-      // Log the full error for debugging
-      console.log(`Error details: ${e.message}. Now the full log here:`, e);
       assert.fail(
         'Poll did not initialize successfully. Check the error message for more details'
       );
     }
 
-    //Get the address of the poll
     const [pollAdress] = PublicKey.findProgramAddressSync(
       [new anchor.BN(1).toArrayLike(Buffer, 'le', 8)],
       programId
     );
 
-    //Fetch the poll
     const poll = await program.account.poll.fetch(pollAdress);
     console.log(poll);
 
-    //Test if the poll id is 1
     assert.equal(poll.pollId.toNumber(), 1);
   });
 
-  //Unhappy test Initialize Poll
   it('Attempt to Initialize Poll with incorrect parameters', async () => {
     try {
       await program.methods
@@ -57,17 +51,15 @@ describe('Voting', () => {
           new anchor.BN(2),
           'Solana Prediction',
           'Will Solana reach $500 before the new year?',
-          new anchor.BN(1735689599),
-          new anchor.BN(1731687319)
+          new anchor.BN(1735689599000),
+          new anchor.BN(1731687319000)
         )
         .rpc();
 
-      // If no error is thrown, fail the test
       assert.fail(
         'Poll initialization should have failed due to invalid time range'
       );
     } catch (e) {
-      // Assert the error message contains the expected string
       assert.include(
         e.message,
         'Poll start must be before poll end',
@@ -139,15 +131,13 @@ describe('Voting', () => {
         .initializeCandidate('No, never!', new anchor.BN(1))
         .rpc();
 
-      // If no error is thrown, fail the test
       assert.fail(
         'Candidate initialization should fail as the Candidate name already exists'
       );
     } catch (e) {
-      // Assert the error message contains the expected string
       assert.include(
         e.message,
-        'Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0. ',
+        'Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0.',
         'Error message does not match expected value'
       );
       console.log(
@@ -203,10 +193,10 @@ describe('Voting', () => {
     assert.equal(yesCandidate.candidateVotes.toNumber(), 1);
   });
 
-  it('Attempt to vote to non exixting candidate', async () => {
+  it('Attempt to vote a second time', async () => {
     try {
       const voteIx = await program.methods
-        .vote(new anchor.BN(1), 'Its over 8000!')
+        .vote(new anchor.BN(1), 'Yes, easy!')
         .instruction();
 
       const blockhashContext = await connection.getLatestBlockhash();
@@ -222,13 +212,13 @@ describe('Voting', () => {
         tx,
         [signer.payer]
       );
-      // If no error is thrown, fail the test
+
+      console.log(`Transaction signature: ${signature}`);
       assert.fail('Voting should fail as the Candidate does not exists');
     } catch (e) {
-      // Assert the error message contains the expected string
       assert.include(
         e.message,
-        'Transaction simulation failed: Error processing Instruction 0: custom program error: 0xbc4',
+        'Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0.',
         'Error message does not match expected value'
       );
       console.log(

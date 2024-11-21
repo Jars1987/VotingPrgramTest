@@ -279,7 +279,7 @@ export function VotingList() {
   }
 
   return (
-    <div className={'space-y-6'}>
+    <div className={'mb-12 w-full '}>
       {!publicKey ? (
         <p className='text-center text-pink-500'>
           To vote you will need to connect your wallet
@@ -288,14 +288,17 @@ export function VotingList() {
       {pollAccounts.isLoading ? (
         <span className='loading loading-spinner loading-lg'></span>
       ) : pollAccounts.data?.length ? (
-        <>
-          <h1 className='text-5xl text-center font-serif mt-40'>Poll List</h1>
-          <div className='flex flex-col items-center space-y-4'>
+        <div className='w-full space-y-4'>
+          <h1 className='text-5xl text-center font-serif mt-40 mb-12'>
+            Poll List
+          </h1>
+          <div className='flex flex-col items-center w-full mx-auto'>
             {/* Table Headers */}
-            <div className='flex justify-around font-bold text-lg bg-gray-200 p-4'>
-              <div className=''>Poll</div>
-              <div className=''>Candidates</div>
-              <div className=''>Winner</div>
+            <div className='flex justify-between font-bold text-lg bg-purple-200 p-4 w-full'>
+              <div className='text-center flex-1'>Poll</div>
+              <div className='text-center flex-1'>Candidates</div>
+              <div className='text-center flex-1'>Status</div>
+              <div className='text-center flex-1'>Winner</div>
             </div>
             {pollAccounts.data?.map(account => (
               <VotingCard
@@ -304,7 +307,7 @@ export function VotingList() {
               />
             ))}
           </div>
-        </>
+        </div>
       ) : (
         <div className='text-center'>
           No Polls found. Create one above to get started.
@@ -384,11 +387,11 @@ export function VotingCard({ account }: { account: PublicKey }) {
   };
 
   return (
-    <div className='space-y-4'>
+    <div className='w-full p-4 bg-white shadow-md border rounded-lg my-2'>
       {/* Poll Row */}
-      <div className='flex items-start p-4 bg-white shadow-md border rounded-lg'>
+      <div className='flex justify-between items-start w-full'>
         {/* Poll Section */}
-        <div className='flex space-y-2'>
+        <div className='flex-1 p-2 space-y-2'>
           <div>
             <h3 className='text-xl font-semibold mb-3'>
               {pollAccountQuery.data?.pollName}
@@ -396,15 +399,11 @@ export function VotingCard({ account }: { account: PublicKey }) {
             <p className='text-gray-800'>
               {pollAccountQuery.data?.pollDescription}
             </p>
-            <p>Poll Start: {pollAccountQuery.data?.pollStart.toNumber()}</p>
-            <p>Poll End: {pollAccountQuery.data?.pollEnd.toNumber()}</p>
           </div>
-
-          <p className='mx-4'>{pollStatus()}</p>
         </div>
 
         {/* Candidates Section */}
-        <div className='flex-1 space-y-2'>
+        <div className='flex-1 p-2 space-y-2'>
           {pollCandidatesList?.map(candidate => (
             <div key={candidate.publicKey.toString()}>
               {!hasPollEnded ? (
@@ -431,8 +430,14 @@ export function VotingCard({ account }: { account: PublicKey }) {
           ))}
         </div>
 
+        <div className='flex-1 p-2 text-center'>
+          <div>
+            {' '}
+            <p className='mx-4'>{pollStatus()}</p>
+          </div>
+        </div>
         {/* Winner Section */}
-        <div className='flex-1 text-center'>
+        <div className='flex-1 p-2 text-center'>
           <div>{getPollWinners(pollCandidatesList)}</div>
         </div>
       </div>

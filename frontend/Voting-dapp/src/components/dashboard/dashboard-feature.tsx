@@ -10,19 +10,21 @@ export default function DashboardFeature() {
   const { publicKey } = useWallet();
 
   return (
-    <div className='w-full border-2 border-red-500'>
+    <div className='w-full'>
       <div>
         <AppHero title='SolKratus' subtitle='Your sol, your vote your rule!' />
 
-        <div className=' py-2 sm:px-6 lg:px-2 text-center'>
-          <div className='space-y-2'>
-            <p className='italic'>
+        <div className='py-2 sm:px-6 lg:px-2 text-center'>
+          <div>
+            <p className='italic text-lg'>
               Start now by creating your own pool or vote on an existing poll.
             </p>
             <div>
               {publicKey ? (
-                <Link href='/voting'>
-                  <button className='btn btn-primary mt-6'>Create Poll</button>
+                <Link href='/create'>
+                  <button className='btn btn-primary bg-violet-600 text-white border-violet-700 mt-6'>
+                    Create Poll
+                  </button>
                 </Link>
               ) : (
                 <div className='max-w-4xl mx-auto'>
@@ -34,11 +36,11 @@ export default function DashboardFeature() {
                 </div>
               )}
             </div>
+            <Link href={'/list'}>
+              <p className='italic text-sm m-4 underline'>Vote on a Poll</p>
+            </Link>
           </div>
         </div>
-      </div>
-      <div className='w-full'>
-        <VotingList />
       </div>
     </div>
   );

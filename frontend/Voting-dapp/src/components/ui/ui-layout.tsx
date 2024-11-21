@@ -25,9 +25,23 @@ export function UiLayout({
     <div className='h-full flex flex-col'>
       <div className='navbar bg-indigo-400 text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0'>
         <div className='flex-1'>
-          <Link href={'/'}>
-            <p className='text-pretty text-xl text-stone-950'>SolKratus</p>
-          </Link>
+          <div className='flex mx-2 items-center'>
+            <Link href={'/'}>
+              <p className='text-pretty px-2 text-xl text-stone-950'>
+                SolKratus
+              </p>
+            </Link>
+            <Link href='/create'>
+              <p className='text-pretty textarea-sm px-2 text-stone-950'>
+                Create Poll
+              </p>
+            </Link>
+            <Link href='/list'>
+              <p className='text-pretty textarea-sm px-2 text-stone-950'>
+                Poll List
+              </p>
+            </Link>
+          </div>
         </div>
         <div className='flex-none space-x-2'>
           <WalletButton />
@@ -120,7 +134,7 @@ export function AppHero({
   subtitle: ReactNode;
 }) {
   return (
-    <div className='hero py-[64px]'>
+    <div className='hero py-[64px] mt-20'>
       <div className='hero-content text-center'>
         <div className='max-w-2xl'>
           {typeof title === 'string' ? (

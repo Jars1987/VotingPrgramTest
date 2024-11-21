@@ -25,7 +25,7 @@ pub struct Vote<'info> {
     init, 
     payer = signer, 
     space = ANCHOR_DESCRIMINATOR + Voter::INIT_SPACE,
-    seeds = [poll_id.to_le_bytes().as_ref(), candidate_name.as_bytes(), signer.key().as_ref()],
+    seeds = [poll_id.to_le_bytes().as_ref(), signer.key().as_ref()],
     bump
   )]
   pub voter: Account<'info, Voter>,

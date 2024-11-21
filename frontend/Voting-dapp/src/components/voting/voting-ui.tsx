@@ -34,6 +34,7 @@ export function PollCreate() {
   const [poll_end, setPollEnd] = useState(getTodayTimestamp());
 
   const isFormValid = name.trim() !== '' && description.trim() !== '';
+  const isPollStartValid = poll_start < poll_end;
 
   const handleSubmit = () => {
     const totalPollAccounts = pollAccounts.data?.length || 0;
@@ -49,6 +50,8 @@ export function PollCreate() {
         poll_start: poll_start_date,
         poll_end: poll_end_date,
       });
+      setName('');
+      setDescription('');
     }
   };
 
@@ -58,21 +61,33 @@ export function PollCreate() {
 
   return (
     <div className='space-y-4'>
-      <input
-        type='text'
-        placeholder='Poll Name'
-        value={name}
-        onChange={e => setName(e.target.value.slice(0, 64))}
-        maxLength={64}
-        className='input input-bordered w-full'
-      />
-      <textarea
-        placeholder='Poll Description'
-        value={description}
-        onChange={e => setDescription(e.target.value.slice(0, 280))}
-        maxLength={280}
-        className='textarea textarea-bordered w-full'
-      />
+      <div className='relative'>
+        <input
+          type='text'
+          placeholder='Poll Name'
+          value={name}
+          onChange={e => setName(e.target.value.slice(0, 64))}
+          maxLength={64}
+          className='input input-bordered w-full'
+        />
+        <p className='text-sm text-gray-500 mt-1'>
+          {64 - name.length} characters remaining
+        </p>
+      </div>
+      <div className='relative'>
+        <textarea
+          placeholder='Poll Description'
+          value={description}
+          onChange={e => {
+            if (e.target.value.length <= 280) setDescription(e.target.value);
+          }}
+          maxLength={280} // HTML constraint
+          className='textarea textarea-bordered w-full'
+        />
+        <p className='text-sm text-gray-500 mt-1'>
+          {280 - description.length} characters remaining
+        </p>
+      </div>
       <div className='flex space-x-4'>
         <input
           type='date'
@@ -92,10 +107,11 @@ export function PollCreate() {
       <button
         className='btn btn-primary w-full'
         onClick={handleSubmit}
-        disabled={initializePoll.isPending || !isFormValid}
+        disabled={initializePoll.isPending || !isFormValid || !isPollStartValid}
       >
         Create Poll {initializePoll.isPending && '...'}
       </button>
+      {!isPollStartValid && <p>Poll End date needs to be after Poll Start</p>}
     </div>
   );
 }
@@ -179,6 +195,7 @@ function PollCard({ account }: { account: PublicKey }) {
         candidate_name: candidateName,
         poll_id: pollId,
       });
+      setCandidateName('');
     }
   };
 
@@ -189,7 +206,7 @@ function PollCard({ account }: { account: PublicKey }) {
   return pollAccountQuery.isLoading ? (
     <span className='loading loading-spinner loading-lg'></span>
   ) : (
-    <div className='card card-bordered border-b-fuchsia-800 border-6'>
+    <div className='card border-purple-600 border-2'>
       <div className='card-body items-center text-center'>
         <div className='space-y-6'>
           <h2
@@ -237,9 +254,11 @@ function PollCard({ account }: { account: PublicKey }) {
                   {pollCandidatesList?.map(candidate => (
                     <div
                       key={candidate.publicKey.toString()}
-                      className='card card-body card-bordered bg-stone-300 border-purple-800 text-black'
+                      className='card card-body bg-indigo-300 border-indigo-500 border-2 text-black opacity-80'
                     >
-                      <h4>{candidate.account.candidateName}</h4>
+                      <h4 className='font-bold'>
+                        {candidate.account.candidateName}
+                      </h4>
                     </div>
                   ))}
                 </div>
@@ -281,7 +300,7 @@ export function VotingList() {
   return (
     <div className={'mb-12 w-full '}>
       {!publicKey ? (
-        <p className='text-center text-pink-500'>
+        <p className='text-center text-pink-500 mt-2'>
           To vote you will need to connect your wallet
         </p>
       ) : null}
@@ -289,9 +308,14 @@ export function VotingList() {
         <span className='loading loading-spinner loading-lg'></span>
       ) : pollAccounts.data?.length ? (
         <div className='w-full space-y-4'>
-          <h1 className='text-5xl text-center font-serif mt-40 mb-12'>
-            Poll List
-          </h1>
+          <div className='my-10'>
+            <h1 className='text-5xl text-center font-serif mt-6 mb-2'>
+              Poll List
+            </h1>
+            <p className='text-sm text-stone-700 text-center'>
+              You can only vote once. Chose wisely.
+            </p>
+          </div>
           <div className='flex flex-col items-center w-full mx-auto'>
             {/* Table Headers */}
             <div className='flex justify-between font-bold text-lg bg-purple-200 p-4 w-full'>
@@ -352,7 +376,7 @@ export function VotingCard({ account }: { account: PublicKey }) {
     if (winnerNames.length > 1) {
       return `It's a draw between: ${winnerNames.join(', ')}`;
     } else {
-      return `Winner: ${winnerNames[0]}`;
+      return `${winnerNames[0]}`;
     }
   };
 
@@ -405,22 +429,26 @@ export function VotingCard({ account }: { account: PublicKey }) {
         {/* Candidates Section */}
         <div className='flex-1 p-2 space-y-2'>
           {pollCandidatesList?.map(candidate => (
-            <div key={candidate.publicKey.toString()}>
+            <div
+              className='flex items-center'
+              key={candidate.publicKey.toString()}
+            >
               {!hasPollEnded ? (
                 <button
-                  className='btn btn-primary m-2'
+                  className='btn btn-primary mx-2 flex-1'
                   onClick={() => handleSubmit(candidate.account.candidateName)}
                   disabled={ownPoll || !publicKey}
                 >
                   {candidate.account.candidateName}
                 </button>
               ) : (
-                <p className='bg-zinc-500 rounded-md text-center'>
+                <p className='bg-indigo-500 rounded-md text-center flex-1'>
                   {candidate.account.candidateName}
                 </p>
               )}
-
-              <span>{candidate.account.candidateVotes.toNumber()} votes</span>
+              <p className='flex-1'>
+                {candidate.account.candidateVotes.toNumber()} votes
+              </p>
               {ownPoll && (
                 <p className='text-red-500 mt-2'>
                   You cannot vote on your own poll.

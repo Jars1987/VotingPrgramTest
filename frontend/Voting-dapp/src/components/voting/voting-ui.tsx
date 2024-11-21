@@ -33,11 +33,6 @@ export function PollCreate() {
   const [poll_start, setPollStart] = useState(getTodayTimestamp());
   const [poll_end, setPollEnd] = useState(getTodayTimestamp());
 
-  // 0- Constraints on the name and description length
-  // 1- const totalPollAmount = fetch the total poll acccounts and check lenght
-  // 2- get unix timestampp converter so we convert the date to unix timestamp when pass the arguments to initializePoll (plus new Anchor BN(value))
-
-  // poll_id, name, description, poll_start, poll_end
   const isFormValid = name.trim() !== '' && description.trim() !== '';
 
   const handleSubmit = () => {
@@ -312,7 +307,6 @@ export function VotingList() {
         </>
       ) : (
         <div className='text-center'>
-          <h2 className={'text-2xl'}>No accounts</h2>
           No Polls found. Create one above to get started.
         </div>
       )}
@@ -402,6 +396,8 @@ export function VotingCard({ account }: { account: PublicKey }) {
             <p className='text-gray-800'>
               {pollAccountQuery.data?.pollDescription}
             </p>
+            <p>Poll Start: {pollAccountQuery.data?.pollStart.toNumber()}</p>
+            <p>Poll End: {pollAccountQuery.data?.pollEnd.toNumber()}</p>
           </div>
 
           <p className='mx-4'>{pollStatus()}</p>

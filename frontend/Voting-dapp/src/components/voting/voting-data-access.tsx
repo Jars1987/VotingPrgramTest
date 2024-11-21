@@ -132,7 +132,9 @@ export function useVotingProgramAccount({ account }: { account: PublicKey }) {
       pollAccountQuery.refetch();
     },
     onError: error => {
+      const time = pollAccountQuery.data?.pollStart.toNumber() || 0;
       toast.error(`Error creating entry: ${error.message}`);
+      console.log('Poll Start: ', new Date(time * 1000).toLocaleString());
     },
   });
 

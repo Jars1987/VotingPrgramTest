@@ -13,9 +13,13 @@ export default function VotingFeature() {
 
   return publicKey ? (
     <div>
-      <AppHero title='Your Created Polls' subtitle={'Create a new poll:'}>
+      <AppHero title='Dashboard' subtitle={'Create a new poll:'}>
         <PollCreate />
       </AppHero>
+      <h2 className='text-center text-4xl font-bold'>Your Polls List</h2>
+      <h4 className='text-center italic'>
+        Add candidates to the poll. Limit of 10 per poll.
+      </h4>
       <PollList />
     </div>
   ) : (

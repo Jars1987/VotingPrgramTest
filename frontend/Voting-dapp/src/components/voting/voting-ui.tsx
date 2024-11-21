@@ -60,7 +60,7 @@ export function PollCreate() {
   }
 
   return (
-    <div className='space-y-4'>
+    <div className=''>
       <div className='relative'>
         <input
           type='text'
@@ -111,7 +111,11 @@ export function PollCreate() {
       >
         Create Poll {initializePoll.isPending && '...'}
       </button>
-      {!isPollStartValid && <p>Poll End date needs to be after Poll Start</p>}
+      {!isPollStartValid && (
+        <p className='text-red-400'>
+          Poll End date needs to be after Poll Start
+        </p>
+      )}
     </div>
   );
 }
@@ -153,7 +157,7 @@ export function PollList() {
           ))}
         </div>
       ) : (
-        <div className='text-center'>
+        <div className='text-center my-4 text-red-400'>
           No Polls found. Create one above to get started.
         </div>
       )}

@@ -222,7 +222,7 @@ describe('Voting', () => {
         'Error message does not match expected value'
       );
       console.log(
-        'Test passed: Unable to initialize candidate as the Candidate name already exists and has already been initialized'
+        'Test passed: Unable to vote as the signer already voted in this poll'
       );
     }
   });

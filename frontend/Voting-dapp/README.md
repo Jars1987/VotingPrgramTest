@@ -1,57 +1,54 @@
-# template-next-tailwind
+# Voting Dapp
 
-### Usage
+## Description
 
-Use the [create-solana-dapp](https://github.com/solana-developers/create-solana-dapp) tool to start a new project based on this template (recommended).
+The Voting Dapp is an application that consists of:
 
-```shell
-# created an npm based project
-npx create-solana-dapp --template next-tailwind
-# created an pnpm based project
-pnpx create-solana-dapp --template next-tailwind
-# created an yarn based project
-yarn create solana-dapp --template next-tailwind
-```
+- A front-end built with Next.js that allows users to call instructions and
+  interact with the Solana Voting Program. They will be able to create polls and
+  vote.
 
-### Prerequisites
+## How it works
 
--   Node v18.18.0 or higher
+1- Creating a Poll: Users can create a poll by clicking the "Create Poll" button
+on the landing page. They are then redirected to a new page where they can fill
+in the poll details and submit the poll the blockchain.
 
-### Manual installation
+2- Adding Candidates: After creating the poll, the newly created poll will spaw
+below the "Create Poll" form. Users can add candidates to the poll to a maximum
+of 10 candidates per poll.
 
-#### Clone the repo
+3- Voting: Once the poll is set up, users navigate to the "Poll List" page. If
+the poll status is "Ongoing", users can vote by clicking on one of the poll
+candidates. The candidate's vote count will then be updated.
 
-```shell
-git clone https://github.com/solana-developers/template-next-tailwind.git
-cd template-next-tailwind
-```
+## Instalation
 
-#### Install Dependencies
+Once the program is deployed, you can start interacting with the front end. The
+front end is built with Next.js and was scaffolded with the solana-dapp
+template.
 
-```shell
-pnpm install
-```
+1- Navigate to the voting-dapp folder inside the frontend directory:
 
-#### Start the web app
+`cd frontend/voting-dapp`
 
-```
-pnpm dev
-```
+2- Install the necessary dependencies:
 
-## Apps
+`npm i`
 
-### web
+3 - Run the application locally:
 
-This is a Next.js web app to get you started on interacting with the Solana network.
+`npm run dev`
 
-Start the web app
+4- Open your browser and go to:
 
-```shell
-pnpm dev
-```
+`http://localhost:3000`
 
-Build the web app
+Ensure your wallet has enough $SOL to pay for transactions.
 
-```shell
-pnpm build
-```
+## Links
+
+The program is deployed on devnet, and the front end is hosted on Vercel. You
+can check it out using the link below:
+
+https://voting-dapp-bay-nine.vercel.app/

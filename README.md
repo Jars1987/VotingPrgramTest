@@ -1,92 +1,113 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/wFAkMYEB)
-![School of Solana](https://github.com/Ackee-Blockchain/school-of-solana/blob/master/.banner/banner.png?raw=true)
+# Voting Dapp
 
-## 📚Solana Program
-We are more than halfway through the course, and you already have some experience with programming on Solana. It is time to create something on your own! You will be building a dApp that will serve as the culmination of everything you have learned so far. Feel free to implement whatever comes to your mind, (as long as it passes the requirements) it may result in a truly great idea!
+## Description
 
-**This does not mean that the School of Solana is coming to an end just yet!** There are still several exciting lectures ahead, as well as one final task.
+The Voting Dapp is an application that consists of:
 
-### Task details
-This task consists of two parts:
-1. **Core of your dApp**
-    - A deployed Solana program.
-2. **Frontend**
-    - A simple frontend to interact with the dApp.
+- A Solana program that registers polls, candidates, and votes on the
+  blockchain.
+- A front-end built with Next.js that allows users to call instructions and
+  interact with the program.
 
+## How it works
 
-### Requirements
-- An Anchor program deployed on **Devnet** or **Mainnet**.
-- The Anchor program must use a PDA (Program Derived Address).
-- At least one TypeScript **test** for each Anchor program instruction. These tests should cover both **happy** and **unhappy** (intentional error-triggering) scenarios.
-- A simple **frontend** deployed using your preferred provider (for more info, check below).
-- A **README.md** file that contains:
-    - A brief **description of your project**, explaining how it works and its purpose.
-    - If you have successfully deployed both the Anchor program and the frontend, include a **link** where we can view the results.
-    - Instructions on **how to build and test** your Anchor program locally.
-    - Instructions on **how to run the frontend** app locally (this is optional for those who deploy frontend).
+Users can start by creating a new poll by clicking "Create Poll" on the landing
+page. They will then be redirected to another page where they can fill in the
+poll details. The front end will call the InitializePoll instruction from the
+Voting Program. This instruction creates a Poll account and stores the poll
+information within it.
 
-### Ideas
-We highly recommended starting with something simple. Take time to think through your project and work on it in iterations. Do not try to implement everything at once!
+After the poll is created, users can add up to 10 candidates. The front end will
+call another instruction, InitiateCandidate, which saves the candidate
+information in the respective Candidate account.
 
-Below is a list of few ideas to get you started:
-- **Social app**
-    - Twitter
-    - Instagram
-    - Giphy
-    - Friendtech
-    - Spotify
-- **Blog**
-- **Voting** ([D21 - Janeček method](https://www.ih21.org/en/guidelines))
-- **DeFi**
-    - Crowdfunding
-    - Raffles
-    - Escrow
-    - Tipping
-    - Lending ([Save Documentation](https://docs.save.finance/))
-    - Liquid Staking ([Marinade Documentation](https://docs.marinade.finance/))
-    - Data Query with Pyth ([Pyth Documentation](https://docs.pyth.network/price-feeds))
-    - AMM ([Raydium Documentation](https://raydium.gitbook.io/raydium/))
-- **Gaming**
-    - Browser Game ([Gaming on Solana](https://solanacookbook.com/gaming/nfts-in-games.html#nfts-in-games))
+Once the poll is set up, it is ready for voting. Users can navigate to the "Poll
+List" page. If the listed poll status is "Ongoing", it means the poll has
+started, and users are allowed to vote. Poll owners cannot vote in their own
+polls. To vote, users simply click on one of the poll candidates and confirm the
+transaction. The front end will call the Vote instruction, which increases the
+vote count for the selected candidate.
 
-### Deadline
-The deadline for this task is **Wednesday, November 27th, 2024 23:59 UTC**.
->[!CAUTION]
->Note that we will not accept submissions after the deadline.
+## Instalation
 
-### Submission
-There are two folders, one for the Anchor project, and the second one for the frontend. Feel free to update this structure if you need to. If you make any significant changes to the structure, please describe them in the project description.
+Use the following command to clone the repository:
 
+`git clone https://github.com/School-of-Solana/program-Jars1987-1`
 
-### Evaluation
-The evaluation process is based on the **requirements**. If you meet the requirements, you pass the task!
+### Anchor
 
-### Example Workflow
-Let's say you are going to implement the Twitter dApp as the Solana Program. Here's how the steps could look:
+1- After cloning the repository, navigate to the voting-dapp folder inside the
+anchor_project directory:
 
-**1.** Implement Twitter dApp using the Anchor framework.
+`cd anchor_project/voting-dapp`
 
-**2.** Test the Twitter dApp using the Anchor framework.
+2- Install the necessary dependencies:
 
-**3.** Deploy the Twitter dApp on the Solana Devnet.
+`cargo build`
 
-**4.** Using the Solana Scaffold template, implement frontend for the Twitter dApp.
+3- Build your program:
 
-**5.** Publish Frontend using [Vercel](https://vercel.com).
+`anchor build`
 
-**6.** Describe dApp within the readme (Frontend + Anchor project).
+4- Deploy the program: Ensure the Solana CLI is configured to localnet and
+running in another terminal. Also, make sure the public key from your
+CLI-generated keypair has enough $SOL. Then, run:
 
-**7.** Submit the Twitter dApp using GitHub Classroom.
+`anchor deploy`
 
-### Useful Links
-- [Vercel](https://vercel.com)
-- [Solana dApp Scaffold](https://github.com/solana-labs/dapp-scaffold#solana-dapp-scaffold-next)
-- [Account Macro Constraints](https://docs.rs/anchor-lang/latest/anchor_lang/derive.Accounts.html#constraints)
-- [Metaplex Documentation](https://docs.metaplex.com/)
-- [Solana Developers Courses](https://solana.com/developers/courses)
+5- Sync all program keys:
 
------
+` anchor keys sync`
 
-### Need help?
->[!TIP]
->If you have any questions, feel free to reach out to us on [Discord](https://discord.gg/z3JVuZyFnp).
+6- Run the tests:
+
+`anchor test --skip-local-validator`
+
+If you plan to re-run the same tests and initialize the same accounts, you must
+reset the validator before starting a new test. Use this command:
+
+`solana-test-validator -r`
+
+### Front End
+
+Once the program is deployed, you can start interacting with the front end. The
+front end is built with Next.js and was scaffolded with the solana-dapp
+template.
+
+1- Navigate to the voting-dapp folder inside the frontend directory:
+
+`cd frontend/voting-dapp`
+
+2- Install the necessary dependencies:
+
+`npm i`
+
+3 - Run the application locally:
+
+`npm run dev`
+
+4- Open your browser and go to:
+
+`http://localhost:3000`
+
+Ensure your wallet has enough $SOL to pay for transactions.
+
+## Links
+
+The program is deployed on devnet, and the front end is hosted on Vercel. You
+can check it out using the link below:
+
+https://voting-dapp-bay-nine.vercel.app/
+
+## Future Implementations
+
+This app is fairly basic. Aside from necessary UI improvements, several features
+could be added:
+
+- **Poll Detail Pages**: Create a dedicated page for each poll based on the
+  pollId. On this page, users could post comments and like or dislike the poll.
+- **Token-Gated Polls**: Implement token gating so that only signers holding a
+  specific token type can vote. This feature would function similarly to the
+  Jupiter voting website.
+- **Monetization**: Charge a small fee (in lamports) for poll creation, which
+  would be sent to a designated account.

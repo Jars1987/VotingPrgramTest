@@ -1,35 +1,55 @@
-# TODO
+# Voting Dapp
 
-----> Time stamps and poll times are other way around
+## Description
 
-----> Create a key pair and test if signer different than the poll owner can
-initialize a candidate
+The Voting Dapp program consists of:
 
-----> To make sure a voter doesnt vote more than once,create a Vote PDA account
-with seeds of poll.key, candidate.key and signer key. This way when you try to
-vote again you can't because it can't initialize the account again.
+- A Solana program that registers polls, candidates, and votes on the
+  blockchain.
 
-----> Token gate the voters
+## How it works
 
-//
+1- Creating a Poll: The InitializePoll instruction is called to create a Poll
+account and store the poll's details on the blockchain.
 
-//**\*\***\*\***\*\***\*\*\*\***\*\***\*\***\*\***
-**\*\*\*\***\*\*\*\***\*\*\*\***\*\*\***\*\*\*\***\*\*\*\***\*\*\*\***//
-instalation: run cargo build run anchor build run npm i
+2- Adding Candidates: The InitiateCandidate instruction is used to create
+Candidate accounts and store the respective candidate information. Each poll can
+have up to 10 candidates.
 
-To test the Program Localy initiale a local validator by running the command:
+3- Voting: The Vote instruction is called to update the vote count on the
+selected Candidate account. This ensures the voting process is securely recorded
+on-chain. Poll owners are restricted from voting in their own polls.
 
-```solana-test-validator -r
+## Instalation
 
-```
+1- After cloning the repository, navigate to the voting-dapp folder inside the
+anchor_project directory:
 
-You will need to kill and re-run the validator everytime you want to re-run the
-tests or it will fail with error that some accounts already exist (already
-innitialez).
+`cd anchor_project/voting-dapp`
 
-To test the program, after the local validator is running, run the following
-command:
+2- Install the necessary dependencies:
 
-```ancho-test --skip-local-validator
+`cargo build`
 
-```
+3- Build your program:
+
+`anchor build`
+
+4- Deploy the program: Ensure the Solana CLI is configured to localnet and
+running in another terminal. Also, make sure the public key from your
+CLI-generated keypair has enough $SOL. Then, run:
+
+`anchor deploy`
+
+5- Sync all program keys:
+
+` anchor keys sync`
+
+6- Run the tests:
+
+`anchor test --skip-local-validator`
+
+If you plan to re-run the same tests and initialize the same accounts, you must
+reset the validator before starting a new test. Use this command:
+
+`solana-test-validator -r`
